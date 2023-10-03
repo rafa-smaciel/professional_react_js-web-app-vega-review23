@@ -9,7 +9,7 @@ import { Layout } from "../components/Layout/Content";
 import { Engineering } from "../modules/Engineering";
 import { Algorithms } from "../modules/Algorithms";
 import { BendingForce } from "../modules/Algorithms/elements/BendingForce";
-import { Manutention } from "../modules/Algorithms/elements/Manutention";
+import { Maintenance } from "../modules/Algorithms/elements/Maintenance";
 import EnergyConsumption from "../modules/Algorithms/elements/EnergyConsumption";
 import VisionSystem from "../modules/Algorithms/elements/VisionSystem";
 import { ObjectDetection } from "../modules/Algorithms/elements/ObjectDetection";
@@ -38,6 +38,7 @@ export const AppRoutes = () => {
         <Route element={<Layout />}>
           <Route index element={<Home />} />
           <Route path="/technology" element={<Technology />} />
+          <Route path="/maintenance" element={<Maintenance />} />
           <Route path="/engineering" element={<Engineering />} />
 
           <Route path="algorithms" element={<Algorithms />} />

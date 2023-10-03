@@ -48,7 +48,7 @@ export const TabPanel = () => {
           name: "Felipe Martins",
           occupation: "Coordenador de Engenharia",
           color: "#4863f7",
-          url: "/technology",
+          url: "/maintenance",
           image: technologyImage2
         }
       ]
@@ -75,6 +75,7 @@ export const TabPanel = () => {
             }
             {activeTab === 1 &&
               <Panel
+                type={'tec'}
                 data={tabView[activeTab]}
               />
             }

@@ -20,8 +20,9 @@ import {
   SideRight,
 } from './styles';
 import { Link } from 'react-router-dom';
+import SwipeableTextMobileStepper from '../../../../../components/Carousel';
 
-export const Panel = ({ data }) => {
+export const Panel = ({ data, type }) => {
   const [isImageLoaded, setImageLoaded] = useState(false);
   const [isAvatarLoaded, setAvatarLoaded] = useState(false);
 
@@ -88,7 +89,10 @@ export const Panel = ({ data }) => {
 
       <SideRight>
         {isImageLoaded ?
-          <img src={data.image} alt="imagem-tecnologia" />
+          type === 'tec' ?
+            <SwipeableTextMobileStepper />
+            :
+            <img src={data.image} alt="imagem-tecnologia" />
           :
           <Skeleton variant="rectangular" sx={{ bgcolor: 'grey.900' }} />
         }

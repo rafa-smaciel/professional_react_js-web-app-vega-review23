@@ -167,4 +167,5 @@ export const Switch = styled.li`
 export const Wrapper = styled.div`
   display: flex;
   margin: 0px 24px;
+  overflow: hidden;
 `;

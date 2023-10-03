@@ -29,7 +29,8 @@ function Header() {
         '/objectdetection',
         '/ppf',
         '/budget',
-        '/forms'
+        '/forms',
+        '/maintenance'
       ])
   }, []);
 
