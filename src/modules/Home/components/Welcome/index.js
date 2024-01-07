@@ -42,7 +42,7 @@ export const Welcome = () => {
         </CTAButton>
       </Content>
 
-      <WhatsApp href="https://wa.me/+551151998949" target="_blank" rel="noreferrer">
+      <WhatsApp href="https://wa.me/+5511950091919" target="_blank" rel="noreferrer">
         <img src={whatsApp} alt="logo-whatsapp" />
       </WhatsApp>
     </Container>

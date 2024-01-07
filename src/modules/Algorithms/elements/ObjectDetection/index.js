@@ -4,30 +4,32 @@ import * as S from "./styles";
 import * as tf from '@tensorflow/tfjs';
 import * as cocossd from '@tensorflow-models/coco-ssd';
 import '@tensorflow/tfjs-backend-webgl';
+import TeachableMachineComponent from './TeachableMachineComponent';
 
 export const ObjectDetection = () => {
   const webcamRef = useRef();
   const canvasRef = useRef();
-  const [detectScrewsOnly, setDetectScrewsOnly] = useState(false);
+  const [detectionMode, setDetectionMode] = useState('coco-ssd');
 
   const loadModelAndDetectObjects = async () => {
-    try {
-      await tf.backend('webgl');
-      const model = await cocossd.load();
-      detectObjects(model);
-    } catch (error) {
-      console.error('Erro ao carregar o modelo:', error);
+    if (detectionMode === 'coco-ssd') {
+      try {
+        await tf.backend('webgl');
+        const model = await cocossd.load();
+        detectObjects(model);
+      } catch (error) {
+        console.error('Erro ao carregar o modelo:', error);
+      }
     }
   };
 
   const detectObjects = async (model) => {
-    if (webcamRef.current && canvasRef.current) {
+    if (detectionMode === 'coco-ssd' && webcamRef.current && canvasRef.current) {
       const video = webcamRef.current.video;
 
       if (video.readyState === video.HAVE_ENOUGH_DATA) {
         const predictions = await model.detect(video);
         renderPredictions(predictions);
-
         requestAnimationFrame(() => {
           detectObjects(model);
         });
@@ -46,47 +48,51 @@ export const ObjectDetection = () => {
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
     predictions.forEach((prediction) => {
-      if (!detectScrewsOnly || prediction['class'] === 'scissors') { // Altere 'scissors' pela classe que você acredita ser a mais apropriada
-        const [x, y, width, height] = prediction['bbox'];
-        ctx.strokeStyle = 'rgba(0, 255, 0, 0.8)';
-        ctx.lineWidth = 2;
-        ctx.strokeRect(x, y, width, height);
+      const [x, y, width, height] = prediction['bbox'];
+      ctx.strokeStyle = 'rgba(0, 255, 0, 0.8)';
+      ctx.lineWidth = 2;
+      ctx.strokeRect(x, y, width, height);
 
-        ctx.font = '18px Arial';
-        ctx.fillStyle = 'rgba(0, 255, 0, 0.8)';
-        const labelText = `${prediction['class']} ${(prediction['score'] * 100).toFixed(2)}%`;
-        ctx.fillText(labelText, x, y - 5);
-      }
+      ctx.font = '18px Arial';
+      ctx.fillStyle = 'rgba(0, 255, 0, 0.8)';
+      const labelText = `${prediction['class']} ${(prediction['score'] * 100).toFixed(2)}%`;
+      ctx.fillText(labelText, x, y - 5);
     });
   };
 
   useEffect(() => {
     loadModelAndDetectObjects();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [detectScrewsOnly]);
+  }, [detectionMode]);
 
-    return (
+  return (
     <S.Container>
       <S.StyledTitle>Detecção de Objetos</S.StyledTitle>
       <S.VideoCanvasWrapper>
-        <Webcam
-          ref={webcamRef}
-          width="600"
-          height="400"
-          mirrored={false}
-          screenshotFormat="image/jpeg"
-          videoConstraints={{ facingMode: 'environment' }}
-        />
-        <S.StyledCanvas ref={canvasRef} />
+        {detectionMode === 'coco-ssd' ? (
+          <>
+            <Webcam
+              ref={webcamRef}
+              width="600"
+              height="400"
+              mirrored={false}
+              screenshotFormat="image/jpeg"
+              videoConstraints={{ facingMode: 'environment' }}
+            />
+            <S.StyledCanvas ref={canvasRef} />
+          </>
+        ) : (
+          <TeachableMachineComponent />
+        )}
       </S.VideoCanvasWrapper>
       <S.SelectorWrapper>
         <label>
-            Modo de Detecção:
-            <select onChange={e => setDetectScrewsOnly(e.target.value === 'screws')}>
-              <option value="all">Todos os Objetos</option>
-              <option value="screws">Somente Parafusos</option>
-            </select>
-          </label>
+          Modo de Detecção:
+          <select onChange={e => setDetectionMode(e.target.value)}>
+            <option value="coco-ssd">COCO-SSD</option>
+            <option value="teachable-machine">Teachable Machine</option>
+          </select>
+        </label>
       </S.SelectorWrapper>
     </S.Container>
   );
